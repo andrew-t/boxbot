@@ -23,7 +23,7 @@ def get_text():
     status_code, response = grist.list_records('BoxBot_Entries')
     entries = [entry['A'] for entry in response]
     # print(entries)
-    entries = [textwrap.wrap(entry,width=22)]
+    entries = [textwrap.wrap(entry,width=22) for entry in entries]
     entries = [entry for entry in entries if len(entry)<6]
     entry = random.choice(entries)
     return entry
