@@ -14,6 +14,7 @@ from PIL import Image,ImageDraw,ImageFont
 import textwrap
 import traceback
 import random
+import datetime
 import time as goto
 from pygrister.api import GristApi
 from dotenv import load_dotenv
@@ -25,6 +26,9 @@ def get_text():
     # print(entries)
     entries = [textwrap.wrap(entry,width=22) for entry in entries]
     entries = [entry for entry in entries if len(entry)<6]
+    now = datetime.datetime.now()
+    seednumber = int(str(now.year) + str(now.month) + str(now.day) + str(now.hour) + str(now.minute - (now.minute % 5)))
+    random.seed(seednumber)
     entry = random.choice(entries)
     return entry
 
