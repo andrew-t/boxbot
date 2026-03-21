@@ -60,8 +60,11 @@ try:
     epd.Clear(0xFF)
 
     while True:
-        update_screen()
-        goto.sleep(30)
+        try:
+            update_screen()
+            goto.sleep(300)
+        except:
+            goto.sleep(60)
             
 except IOError as e:
     logging.info(e)
