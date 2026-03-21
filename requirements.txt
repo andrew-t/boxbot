@@ -1,0 +1,5 @@
+gpiozero==2.0.1
+spidev==3.8
+pillow==12.1.1
+pygrister==0.9.1
+python-dotenv==1.2.2
