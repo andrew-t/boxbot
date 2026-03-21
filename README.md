@@ -29,3 +29,8 @@ Interface Options -> SPI
     systemctl --user daemon-reload
     systemctl --user enable boxbot
   ```
+
+## Connecting to Grist
+To connect to grist, you'll need to set the `GRIST_API_KEY` and `GRIST_DOC_ID`.
+
+Copy the `.env.example` to `.env` and set the values
