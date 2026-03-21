@@ -1,0 +1,7 @@
+[Service]
+WorkingDirectory=/home/pie/Documents/BoxBot
+ExecStart=sh -c '. .venv/bin/activate; python3 boxbot.py'
+Type=exec
+
+[Install]
+WantedBy=default.target
