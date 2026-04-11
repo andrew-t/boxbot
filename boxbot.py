@@ -2,11 +2,6 @@
 # -*- coding:utf-8 -*-
 import sys
 import os
-picdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'pic')
-libdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'lib')
-if os.path.exists(libdir):
-    sys.path.append(libdir)
-
 import logging
 from waveshare_epd import epd2in13_V4
 import time
@@ -70,10 +65,12 @@ try:
     logging.info("init and Clear")
     epd.init()
     epd.Clear(0xFF)
-
+    logging.info('here1')
     while True:
         try:
+            logging.info('here2')
             update_screen()
+            logging.info('here3')
             goto.sleep(300)
         except:
             goto.sleep(60)
