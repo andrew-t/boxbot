@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding:utf-8 -*-
 import logging
 from waveshare_epd import epd2in13_V4

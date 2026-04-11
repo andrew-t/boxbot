@@ -1,8 +1,8 @@
-#!/usr/bin/python
 # -*- coding:utf-8 -*-
 import logging
 import random
 import datetime
+import time as goto
 from dotenv import load_dotenv
 from pygrister.api import GristApi
 
@@ -24,3 +24,9 @@ def get_text():
     entry = random.choice(entries)
     logging.info(f"Chose: {entry}")
     return entry
+
+def wait_until_next_update():
+    now = datetime.datetime.now()
+    time = (now.minute % 5) * 60 + now.second
+    logging.info(f'Waiting {time}s for next update')
+    goto.sleep(301 - time)
