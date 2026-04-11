@@ -47,8 +47,9 @@ def largest_font_that_fits(text):
         wrapped = textwrap.wrap(text, width=font.line_length)
         if len(wrapped) <= font.max_lines:
             logging.info(f"Chose font: {font}")
-            return font.font, "\n".join(wrapped)
-    logging.info("Failed to find a font small enough")
+    else:
+        # If the loop fails, log a warning, but continue to return the smallest font we have
+        logging.warning("Failed to find a font small enough")
     return font.font, "\n".join(wrapped)
 
 logging.basicConfig(level=logging.DEBUG)
@@ -85,8 +86,10 @@ try:
 
 except IOError as e:
     logging.info(e)
-
+    
 except KeyboardInterrupt:
     logging.info("ctrl + c:")
+
+finally:
     epd2in13_V4.epdconfig.module_exit(cleanup=True)
     exit()
