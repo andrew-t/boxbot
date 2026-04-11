@@ -15,7 +15,7 @@ from pygrister.api import GristApi
 from dotenv import load_dotenv
 
 from collections import namedtuple
-SizedFont = namedtuple('font', 'line_length', 'max_lines')
+SizedFont = namedtuple('SizedFont', ['font', 'line_length', 'max_lines'])
 
 def get_text():
     status_code, response = grist.list_records('BoxBot_Entries')
@@ -42,8 +42,10 @@ def update_screen():
 def largest_font_that_fits(text):
     for font in fonts:
         wrapped = textwrap.wrap(text, width=font.line_length)
-        if len(wrapped) < font.max_lines:
+        if len(wrapped) <= font.max_lines:
             return font, "\n".join(wrapped)
+    logging.info("Failed to find a font small enough")
+    return font, "\n".join(wrapped)
 
 logging.basicConfig(level=logging.DEBUG)
     
@@ -56,21 +58,21 @@ try:
     font20 = ImageFont.truetype('RobotoMono.ttf', 20)
     font24 = ImageFont.truetype('RobotoMono.ttf', 24)
     fonts = [
-        SizedFont(font24, line_length=16, max_lines=4),
-        SizedFont(font20, line_length=20, max_lines=5),
-        SizedFont(font18, line_length=22, max_lines=6)
+        SizedFont(font24, line_length=16, max_lines=3),
+        SizedFont(font20, line_length=20, max_lines=4),
+        SizedFont(font18, line_length=22, max_lines=5)
     ]
 
     epd = epd2in13_V4.EPD()
     logging.info("init and Clear")
     epd.init()
     epd.Clear(0xFF)
-    logging.info('here1')
+    logging.info('Starting main loop')
     while True:
         try:
-            logging.info('here2')
+            logging.info('Updating screen')
             update_screen()
-            logging.info('here3')
+            logging.info('Waiting for next update')
             goto.sleep(300)
         except:
             goto.sleep(60)
