@@ -6,7 +6,7 @@ import time as goto
 from dotenv import load_dotenv
 from pygrister.api import GristApi
 
-from fonts import text_fits_on_screen
+from base_font import text_fits_on_screen
 
 logging.basicConfig(level=logging.DEBUG)
 

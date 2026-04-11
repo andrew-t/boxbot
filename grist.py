@@ -1,7 +1,7 @@
 from pygrister.api import GristApi
 from dotenv import load_dotenv
 
-from fonts import text_fits_on_screen
+from base_font import text_fits_on_screen
 
 load_dotenv()
 grist = GristApi()

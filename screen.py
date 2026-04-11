@@ -3,9 +3,13 @@ import logging
 from waveshare_epd import epd2in13_V4
 from PIL import Image, ImageDraw
 
-from fonts import largest_font_that_fits
+from more_fonts import largest_font_that_fits
 
 logging.basicConfig(level=logging.DEBUG)
+
+# We use the screen on its side so swap these to avoid having to think about that elsewhere
+width = epd2in13_V4.EPD_HEIGHT
+height = epd2in13_V4.EPD_WIDTH
 
 class Screen:
     def __enter__(self):
