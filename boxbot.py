@@ -19,29 +19,36 @@ import time as goto
 from pygrister.api import GristApi
 from dotenv import load_dotenv
 
+from collections import namedtuple
+SizedFont = namedtuple('font', 'line_length', 'max_lines')
 
 def get_text():
     status_code, response = grist.list_records('BoxBot_Entries')
     entries = [entry['A'] for entry in response]
     # print(entries)
-    entries = [textwrap.wrap(entry,width=22) for entry in entries]
-    entries = [entry for entry in entries if len(entry)<6]
+    entries = [entry for entry in entries if len(textwrap.wrap(entry, width=22))<6]
     now = datetime.datetime.now()
-    seednumber = int(str(now.year) + str(now.month) + str(now.day) + str(now.hour) + str(now.minute - (now.minute % 5)))
-    random.seed(seednumber)
+    seed = int(str(now.year) + str(now.month) + str(now.day) + str(now.hour) + str(now.minute - (now.minute % 5)))
+    random.seed(seed)
     entry = random.choice(entries)
     return entry
 
 def update_screen():        
-    textstring = get_text()
-    wrapstring = "\n".join(textstring)
+    text = get_text()
     text_image = Image.new('1', (epd.height, epd.width), 255)
     text_draw = ImageDraw.Draw(text_image)
     epd.displayPartBaseImage(epd.getbuffer(text_image))
     text_draw.rectangle((120, 80, 220, 105), fill = 255)
-    text_draw.text((0, 10), wrapstring, font = font18, fill = 0)
+    font, wrapped = largest_font_that_fits(text)
+    text_draw.text((0, 10), wrapped, font, fill = 0)
     text_image = text_image.rotate(180.0)
     epd.displayPartial(epd.getbuffer(text_image))
+
+def largest_font_that_fits(text):
+    for font in fonts:
+        wrapped = textwrap.wrap(text, width=font.line_length)
+        if len(wrapped) < font.max_lines:
+            return font, "\n".join(wrapped)
 
 logging.basicConfig(level=logging.DEBUG)
     
@@ -53,6 +60,11 @@ try:
     font18 = ImageFont.truetype('RobotoMono.ttf', 18)
     font20 = ImageFont.truetype('RobotoMono.ttf', 20)
     font24 = ImageFont.truetype('RobotoMono.ttf', 24)
+    fonts = [
+        SizedFont(font24, line_length=16, max_lines=4),
+        SizedFont(font20, line_length=20, max_lines=5),
+        SizedFont(font18, line_length=22, max_lines=6)
+    ]
 
     epd = epd2in13_V4.EPD()
     logging.info("init and Clear")
