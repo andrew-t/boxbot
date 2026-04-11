@@ -13,7 +13,8 @@ class SizedFont:
     def __init__(self, size):
         self.name = f"Roboto Regular {size}px"
         self.font = ImageFont.truetype('Roboto.ttf', size)
-        logging.info(f"Loaded Roboto Regular at size {size}")
+        left, top, width, self.line_height = self.font.getbbox('p')
+        logging.info(f"Loaded Roboto Regular at size {size}. Line height is {self.line_height}")
 
     def wrap_text_if_fits(self, text):
         lines = []
@@ -37,8 +38,7 @@ class SizedFont:
         lines.append(current_line)
         lines = [line for line in lines if line]
 
-        left, top, width, line_height = self.font.getbbox('M')
-        total_height = len(lines) * line_height
+        total_height = len(lines) * self.line_height
         # assume a 20px margin top and bottom
         if total_height > screen.height - 20:
             logging.debug(f"Rejected font {self.name} with wrapping")
