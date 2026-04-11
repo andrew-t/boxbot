@@ -15,7 +15,7 @@ from pygrister.api import GristApi
 from dotenv import load_dotenv
 
 from collections import namedtuple
-SizedFont = namedtuple('SizedFont', ['font', 'line_length', 'max_lines'])
+SizedFont = namedtuple('SizedFont', ['font', 'size', 'line_length', 'max_lines'])
 
 def get_text():
     status_code, response = grist.list_records('BoxBot_Entries')
@@ -46,7 +46,8 @@ def largest_font_that_fits(text):
     for font in fonts:
         wrapped = textwrap.wrap(text, width=font.line_length)
         if len(wrapped) <= font.max_lines:
-            logging.info(f"Chose font: {font}")
+            logging.info(f"Chose font: {font.size}")
+            break
     else:
         # If the loop fails, log a warning, but continue to return the smallest font we have
         logging.warning("Failed to find a font small enough")
@@ -57,6 +58,7 @@ logging.basicConfig(level=logging.DEBUG)
 def load_font(size):
     font = SizedFont(
         ImageFont.truetype('RobotoMono.ttf', size),
+        size,
         line_length=int(400 / size),
         max_lines=int(90 / size)
     )
