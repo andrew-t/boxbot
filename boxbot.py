@@ -21,21 +21,24 @@ def get_text():
     status_code, response = grist.list_records('BoxBot_Entries')
     entries = [entry['A'] for entry in response]
     # print(entries)
+    logging.info(f"Found {len(entries)} entries")
     entries = [entry for entry in entries if len(textwrap.wrap(entry, width=22))<6]
+    logging.info(f"Found {len(entries)} entries after filtering")
     now = datetime.datetime.now()
     seed = int(str(now.year) + str(now.month) + str(now.day) + str(now.hour) + str(now.minute - (now.minute % 5)))
     random.seed(seed)
     entry = random.choice(entries)
+    logging.info(f"Chose: {entry}")
     return entry
 
-def update_screen():        
+def update_screen():
     text = get_text()
     text_image = Image.new('1', (epd.height, epd.width), 255)
     text_draw = ImageDraw.Draw(text_image)
     epd.displayPartBaseImage(epd.getbuffer(text_image))
     text_draw.rectangle((120, 80, 220, 105), fill = 255)
     font, wrapped = largest_font_that_fits(text)
-    text_draw.text((0, 10), wrapped, font, fill = 0)
+    text_draw.text((0, 10), wrapped, font=font, fill=0)
     text_image = text_image.rotate(180.0)
     epd.displayPartial(epd.getbuffer(text_image))
 
@@ -43,17 +46,18 @@ def largest_font_that_fits(text):
     for font in fonts:
         wrapped = textwrap.wrap(text, width=font.line_length)
         if len(wrapped) <= font.max_lines:
-            return font, "\n".join(wrapped)
+            logging.info(f"Chose font: {font}")
+            return font.font, "\n".join(wrapped)
     logging.info("Failed to find a font small enough")
-    return font, "\n".join(wrapped)
+    return font.font, "\n".join(wrapped)
 
 logging.basicConfig(level=logging.DEBUG)
-    
+
 try:
     logging.info("epd2in13_V4 Demo")
     load_dotenv()
     grist = GristApi()
-    
+
     font18 = ImageFont.truetype('RobotoMono.ttf', 18)
     font20 = ImageFont.truetype('RobotoMono.ttf', 20)
     font24 = ImageFont.truetype('RobotoMono.ttf', 24)
@@ -74,13 +78,15 @@ try:
             update_screen()
             logging.info('Waiting for next update')
             goto.sleep(300)
-        except:
+        except Exception as e:
+            logging.warning('Failed to update screen')
+            logging.warning(e)
             goto.sleep(60)
-            
+
 except IOError as e:
     logging.info(e)
-    
-except KeyboardInterrupt:    
+
+except KeyboardInterrupt:
     logging.info("ctrl + c:")
     epd2in13_V4.epdconfig.module_exit(cleanup=True)
     exit()
