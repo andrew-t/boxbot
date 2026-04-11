@@ -5,6 +5,8 @@ from PIL import Image, ImageDraw
 
 from fonts import largest_font_that_fits
 
+logging.basicConfig(level=logging.DEBUG)
+
 class Screen:
     def __enter__(self):
         logging.info("epd2in13_V4 Demo")

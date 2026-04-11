@@ -8,6 +8,8 @@ from pygrister.api import GristApi
 
 from fonts import text_fits_on_screen
 
+logging.basicConfig(level=logging.DEBUG)
+
 load_dotenv()
 grist = GristApi()
 
@@ -27,6 +29,7 @@ def get_text():
 
 def wait_until_next_update():
     now = datetime.datetime.now()
-    time = (now.minute % 5) * 60 + now.second
+    # Add a second just to make sure we catch the *next* update rather than displaying this one again
+    time = 301 - ((now.minute % 5) * 60 + now.second)
     logging.info(f'Waiting {time}s for next update')
-    goto.sleep(301 - time)
+    goto.sleep(time)

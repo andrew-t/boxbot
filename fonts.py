@@ -6,6 +6,8 @@ import textwrap
 from collections import namedtuple
 SizedFont = namedtuple('SizedFont', ['font', 'size', 'line_length', 'max_lines'])
 
+logging.basicConfig(level=logging.DEBUG)
+
 FONT_SIZES = [30, 24, 20, 18]
 
 def load_font(size):
