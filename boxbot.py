@@ -54,19 +54,21 @@ def largest_font_that_fits(text):
 
 logging.basicConfig(level=logging.DEBUG)
 
+def load_font(size):
+    font = SizedFont(
+        ImageFont.truetype('RobotoMono.ttf', size),
+        line_length=int(400 / size),
+        max_lines=int(90 / size)
+    )
+    logging.info(f"Loaded font at size {size}. Text area is {font.line_length} × {font.max_lines}")
+    return font
+
 try:
     logging.info("epd2in13_V4 Demo")
     load_dotenv()
     grist = GristApi()
 
-    font18 = ImageFont.truetype('RobotoMono.ttf', 18)
-    font20 = ImageFont.truetype('RobotoMono.ttf', 20)
-    font24 = ImageFont.truetype('RobotoMono.ttf', 24)
-    fonts = [
-        SizedFont(font24, line_length=16, max_lines=3),
-        SizedFont(font20, line_length=20, max_lines=4),
-        SizedFont(font18, line_length=22, max_lines=5)
-    ]
+    fonts = [ load_font(size) for size in [30, 24, 20, 18] ]
 
     epd = epd2in13_V4.EPD()
     logging.info("init and Clear")
