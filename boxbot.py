@@ -22,10 +22,11 @@ with Screen() as screen:
             except Exception as e:
                 logging.warning('Failed to update screen')
                 logging.warning(e)
+                screen.write(str(e))
                 goto.sleep(60)
 
     except IOError as e:
         logging.info(e)
-        
+
     except KeyboardInterrupt:
         logging.info("ctrl + c:")
