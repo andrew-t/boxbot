@@ -3,23 +3,45 @@ import logging
 import random
 import datetime
 import time as goto
+from typing_extensions import ParamSpecArgs
 from dotenv import load_dotenv
 from pygrister.api import GristApi
 
 from base_font import text_fits_on_screen
+import threading
 
 logging.basicConfig(level=logging.DEBUG)
 
 load_dotenv()
 grist = GristApi()
 
+entries = ['No facts loaded yet']
+
+class Interval:
+    def __init__(self, func, sec):
+        def func_wrapper():
+            self.t = threading.Timer(sec, func_wrapper)
+            func()
+        self.t = threading.Timer(sec, func_wrapper)
+        self.t.start()
+
+def load_entries():
+    global entries
+    try:
+        status_code, response = grist.list_records('BoxBot_Entries')
+        all_entries = [entry['A'] for entry in response]
+        # print(entries)
+        logging.info(f"Found {len(all_entries)} entries")
+        entries = [entry for entry in all_entries if text_fits_on_screen(entry)]
+        logging.info(f"Found {len(entries)} entries after filtering")
+    except Exception as e:
+        logging.error("Error loading entries", e)
+        if len(entries) < 1:
+            entries = [str(e)]
+
+interval = Interval(load_entries, 15*60)
+
 def get_text():
-    status_code, response = grist.list_records('BoxBot_Entries')
-    entries = [entry['A'] for entry in response]
-    # print(entries)
-    logging.info(f"Found {len(entries)} entries")
-    entries = [entry for entry in entries if text_fits_on_screen(entry)]
-    logging.info(f"Found {len(entries)} entries after filtering")
     now = datetime.datetime.now()
     seed = int(str(now.year) + str(now.month) + str(now.day) + str(now.hour) + str(now.minute - (now.minute % 5)))
     random.seed(seed)
