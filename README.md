@@ -30,6 +30,11 @@ Interface Options -> SPI
     systemctl --user enable boxbot
   ```
 
+To see the logs and current status of the service, run
+```bash
+systemctl --user status boxbot
+```
+
 ## Connecting to Grist
 To connect to grist, you'll need to set the `GRIST_API_KEY` and `GRIST_DOC_ID`.
 
