@@ -3,8 +3,8 @@ import logging
 import random
 import datetime
 import time as goto
-from typing_extensions import ParamSpecArgs
 from dotenv import load_dotenv
+from interval import Interval
 from pygrister.api import GristApi
 
 from base_font import text_fits_on_screen
@@ -16,14 +16,6 @@ load_dotenv()
 grist = GristApi()
 
 entries = ['No facts loaded yet']
-
-class Interval:
-    def __init__(self, func, sec):
-        def func_wrapper():
-            self.t = threading.Timer(sec, func_wrapper)
-            func()
-        self.t = threading.Timer(sec, func_wrapper)
-        self.t.start()
 
 def load_entries():
     global entries
@@ -39,6 +31,7 @@ def load_entries():
         if len(entries) < 1:
             entries = [str(e)]
 
+load_entries()
 interval = Interval(load_entries, 15*60)
 
 def get_text():
