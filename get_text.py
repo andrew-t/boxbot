@@ -17,6 +17,12 @@ grist = GristApi()
 
 entries = ['No facts loaded yet']
 
+try:
+    with open("facts", "w") as f:
+        entries = [ line for line in f.readlines() if line ]
+except Exception as e:
+    print("Couldn't load cached facts")
+
 def load_entries():
     global entries
     try:
@@ -26,6 +32,8 @@ def load_entries():
         logging.info(f"Found {len(all_entries)} entries")
         entries = [entry for entry in all_entries if text_fits_on_screen(entry)]
         logging.info(f"Found {len(entries)} entries after filtering")
+        with open("facts", "w") as f:
+            f.write('\n'.join(entries))
     except Exception as e:
         logging.error("Error loading entries", e)
         if len(entries) < 1:
