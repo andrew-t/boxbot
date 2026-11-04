@@ -27,6 +27,8 @@ def load_entries():
     global entries
     try:
         status_code, response = grist.list_records('BoxBot_Entries')
+        if status_code >= 400:
+        	raise Exception(f'Failed with error code {status_code}')
         all_entries = [entry['A'] for entry in response]
         # print(entries)
         logging.info(f"Found {len(all_entries)} entries")
