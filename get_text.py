@@ -28,15 +28,15 @@ def load_entries():
     try:
         status_code, response = grist.list_records('BoxBot_Entries')
         if status_code >= 400:
-        	raise Exception(f'Failed with error code {status_code}')
+            raise Exception(f'Failed with error code {status_code}')
         all_entries = [entry['A'] for entry in response]
         # print(entries)
         logging.info(f"Found {len(all_entries)} entries")
         entries = [entry for entry in all_entries if text_fits_on_screen(entry)]
         logging.info(f"Found {len(entries)} entries after filtering")
         if f:
-        	with open("facts", "w") as f:
-            	f.write('\n'.join(entries))
+            with open("facts", "w") as f:
+                f.write('\n'.join(entries))
     except Exception as e:
         logging.error("Error loading entries", e)
         if not entries:
