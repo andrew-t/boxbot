@@ -34,7 +34,7 @@ def load_entries():
         logging.info(f"Found {len(all_entries)} entries")
         entries = [entry for entry in all_entries if text_fits_on_screen(entry)]
         logging.info(f"Found {len(entries)} entries after filtering")
-        if f:
+        if entries:
             with open("facts", "w") as f:
                 f.write('\n'.join(entries))
     except Exception as e:
